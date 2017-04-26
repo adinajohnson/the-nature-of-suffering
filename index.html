@@ -1,0 +1,43 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Book of Job</title>
+	<script src="phaser.min.js"></script>
+	<script src="src2/Boot.js"></script>
+	<script src="src2/Preloader.js"></script>
+	<script src="src2/MainMenu.js"></script>
+	<script src="src2/Game.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=VT323');
+		body {  font-family: 'VT323'; }
+	</style>
+</head>
+<body>
+
+<div id="gameContainer"></div>
+
+<script type="text/javascript">
+
+window.onload = function() {
+
+	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'gameContainer');
+
+
+
+	//	Add the States
+	game.state.add('Boot', BasicGame.Boot);
+	game.state.add('Preloader', BasicGame.Preloader);
+	game.state.add('MainMenu', BasicGame.MainMenu);
+	game.state.add('Game', BasicGame.Game);
+	//	start the Boot state.
+	game.state.start('Boot');
+
+};
+
+</script>
+
+</body>
+</html>
