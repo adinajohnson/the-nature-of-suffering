@@ -9,6 +9,8 @@
 	<script src="src2/Preloader.js"></script>
 	<script src="src2/MainMenu.js"></script>
 	<script src="src2/Game.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 	<style>
 		@import url('https://fonts.googleapis.com/css?family=VT323');
@@ -16,14 +18,23 @@
 	</style>
 </head>
 <body>
-
 <div id="gameContainer"></div>
+
+<script>
+  WebFont.load({
+    google: {
+      families: ['VT323']
+    }
+  });
+</script>
 
 <script type="text/javascript">
 
+
+
 window.onload = function() {
 
-	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'gameContainer');
+	var game = new Phaser.Game(600, 600, Phaser.AUTO, 'gameContainer');
 
 
 

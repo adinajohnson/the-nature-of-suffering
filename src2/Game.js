@@ -1,4 +1,3 @@
-
 BasicGame.Game = function (game) {
 
   var piety;
@@ -30,11 +29,18 @@ BasicGame.Game = function (game) {
   var answer1Text;
   var answer2Text;
   var happinessText;
+  var defaultnum;
+  var job;
+  var ram;
+  var timeCheck;
+  var ramtext;
 };
 
 BasicGame.Game.prototype = {
 
     create: function () {
+      defaultnum = 0;
+
       piety = 50;
       commandments = 50;
       questioning = 50;
@@ -49,23 +55,28 @@ BasicGame.Game.prototype = {
       godIntelligence = Math.floor(Math.random() * 100);
       godPleased = godLaws + godJealousy + godIntelligence;
 
-      goodEvents = ["abraham", "windfall", "fertility", "donation", "compliment"];
-      badEvents = ["thunderstorm", "pustules", "children", "roof", "divorce", "drought", "horse", "flood"];
+      goodEvents = ["abraham", "windfall", "fertility", "donation"]; //some of these tend to happen tooearly
+      badEvents = ["thunderstorm", "pustules", "children", "roof", "divorce", "drought"];
+      //ideas not yet implemented: "seduction", "horse", "flood"
 
-      this.game.stage.backgroundColor = "#f0f0f0";
-      var job = this.game.add.sprite(200, 0, "job", "jobsprite.png");
-      var ram = this.game.add.sprite(300, 500, "ram", "ram.png")
+      this.game.stage.backgroundColor = "#b4a58d";
+      job = this.game.add.sprite(200, 0, "job");
+      job.animations.add("blink", [0,1,0], 10, false);
+      ram = this.game.add.sprite(300, 500, "ram", "ram.png")
+      ramtext = this.game.add.text(260, 525, 'SACRIFICE', { fontSize: '45px', fill: '#fff' });
+      ramtext.font = 'VT323';
       ram.anchor.set(0.5);
       ram.inputEnabled = true;
       ram.events.onInputDown.add(this.sacrifice, this, ram);
 
-      wealthText = this.game.add.text(16, 16, 'Wealth: 50', { fontSize: '60px', fill: '#fff' });
+      wealthText = this.game.add.text(15, 15, 'WEALTH: 50', { fontSize: '45px', fill: '#fff' });
       wealthText.font = 'VT323';
-      happinessText = this.game.add.text(25, 25, 'Happiness: 50', { fontSize: '60px', fill: '#fff' });
+      happinessText = this.game.add.text(15, 45, 'HAPPINESS: 50', { fontSize: '45px', fill: '#fff' });
       happinessText.font = 'VT323';
 
+      this.timer();
       myself = this;
-      random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+      random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
       eventTimer = myself.game.time.create(true);
       eventTimer.add(random, myself.event, myself.game);
       eventTimer.start();
@@ -73,12 +84,24 @@ BasicGame.Game.prototype = {
     },
 
     update: function () {
+      // test for 3 second delay
+      if (this.game.time.now - timeCheck > 3000){
+        job.animations.play("blink");
+        myself.timer();
+      }
     },
 
+
+    timer: function() {
+      timeCheck = this.game.time.now;
+    },
+
+
     sacrifice: function(ram) {
+
       if (wealth>0) {
         wealth -= 1;
-        wealthText.text = 'Wealth: ' + wealth;
+        wealthText.text = 'WEALTH: ' + wealth;
         piety += godJealousy%10 + 1;
       }
     },
@@ -86,12 +109,12 @@ BasicGame.Game.prototype = {
     event: function() {
       pleasing = piety + commandments + questioning;
       godPleased = godLaws + godJealousy + godIntelligence;
-      var randomCares = Math.floor(Math.random() * (60 - 25)) + 25;
-      var randomLuck = Math.floor(Math.random() * (60 - 25)) + 25;
-      if (godCares > randomCares) { //REDO...... CHECK IF EMPTY???
+      var randomCares = Math.floor(Math.random() * (60 - 10)) + 10;
+      var randomLuck = Math.floor(Math.random() * (60 - 10)) + 10;
+      if (godCares > randomCares) {
         if (pleasing/godPleased > 0.5) {
           randomEvent = goodEvents.splice([Math.floor(Math.random() * goodEvents.length)], 1);
-
+        } else {
           randomEvent = badEvents.splice([Math.floor(Math.random() * badEvents.length)], 1);
         }
       } else if ((luck > randomLuck) && wealth > 15) {
@@ -146,11 +169,16 @@ BasicGame.Game.prototype = {
           break;
         default:
           console.log("default " + randomEvent);
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          defaultnum++;
+          if (defaultnum > 2) {
+            myself.endgame(0);
+          } else {
+            random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
-          eventTimer = myself.game.time.create(true);
-          eventTimer.add(random, myself.event, myself.game);
-          eventTimer.start();
+            eventTimer = myself.game.time.create(true);
+            eventTimer.add(random, myself.event, myself.game);
+            eventTimer.start();
+        }
       }
 
 
@@ -159,42 +187,41 @@ BasicGame.Game.prototype = {
     abraham: function(stage) {
       switch(String(stage)) {
         case "start":
-        console.log("abraham start");
-          eventText = this.game.add.text(300, 50, 'God says: Kill me a son', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'GOD SAYS: KILL ME A SON', { fontSize: '75px', fill: '#fff', wordWrap: true, wordWrapWidth: 600});
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
           eventText.font = 'VT323';
-          continueText = this.game.add.text(300, 100, 'Man, you must be puttin\' me on', { fontSize: '60px', fill: '#fff' });
+          continueText = this.game.add.text(300, 150, 'Man, you must be puttin\' me on', { fontSize: '60px', fill: '#fff' });
           continueText.font = 'VT323';
-          continueText.anchor.set(0.5);
+          continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
-          //continueText.events.onInputDown.add(this.abraham,0,"continue1", this);
           continueText.events.onInputDown.add(function(text){myself.abraham("continue1")}, this);
           break;
         case "continue1":
-          eventText.text = 'No';
+          eventText.text = 'NO';
           continueText.text = 'What';
-          continueText.anchor.set(0.5);
+          continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
           continueText.events.onInputDown.add(function(text){myself.abraham("continue2")}, this);
           break;
         case "continue2":
-          eventText.text = 'You can do what you want, but the next time you see me comin\' you better run';
+          eventText.text = 'YOU CAN DO WHAT YOU WANT, BUT THE NEXT TIME YOU SEE ME COMIN\' YOU BETTER RUN';
           continueText.text = 'Where d\'you want this killin\' done?';
-          continueText.anchor.set(0.5);
+          continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
           continueText.events.onInputDown.add(function(text){myself.abraham("continue3")}, this);
           break;
         case "continue3":
-          eventText.text = 'Out on Highway 61';
+          eventText.text = 'OUT ON HIGHWAY 61';
           continueText.destroy();
-          answer1Text = this.game.add.text(300, 150, 'Okay see you in 3 days', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, 'Okay see you in 3 days', { fontSize: '55px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.abraham("yes")}, this);
 
-          answer2Text = this.game.add.text(300, 200, 'I\'m good thanks', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, 'I\'m good thanks', { fontSize: '55px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.abraham("no")}, this);
 
@@ -227,8 +254,8 @@ BasicGame.Game.prototype = {
             }
           }
           happiness -= 25;
-          happinessText.text = 'Happiness: ' + happiness;
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          happinessText.text = 'HAPPINESS: ' + happiness;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -261,7 +288,7 @@ BasicGame.Game.prototype = {
               commandments -= 50;
             }
           }
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -277,16 +304,17 @@ BasicGame.Game.prototype = {
     windfall: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 50, 'Congrats you get a lot of money', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOU WIN A LOT OF MONEY', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
           answer1Text = this.game.add.text(300, 150, 'Great I will take it', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.windfall("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'No I love God too much to take this money', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.windfall("no")}, this);
 
@@ -310,8 +338,8 @@ BasicGame.Game.prototype = {
             }
           }
           wealth += 50;
-          wealthText.text = 'Wealth: ' + wealth;
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          wealthText.text = 'WEALTH: ' + wealth;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -336,9 +364,9 @@ BasicGame.Game.prototype = {
             }
           }
           happiness -= 25;
-          happinessText.text = 'Happiness: ' + happiness;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -354,23 +382,23 @@ BasicGame.Game.prototype = {
     fertility: function(stage) {
       switch(String(stage)) {
         case "start":
-          console.log("fertility start");
-          eventText = this.game.add.text(300, 50, 'u will be having lots of babies', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOUR WIFE IS VERY PREGNANT', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
           answer1Text = this.game.add.text(300, 150, 'Thank The Lord', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.fertility("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Ok cool', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.fertility("no")}, this);
 
           break;
         case "yes":
-          console.log("fertility yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -389,16 +417,15 @@ BasicGame.Game.prototype = {
             }
           }
           happiness += 25;
-          happinessText.text = 'Happiness: ' + happiness;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no":
-          console.log("fertility no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -417,9 +444,9 @@ BasicGame.Game.prototype = {
             }
           }
           happiness += 25;
-          happinessText.text = 'Happiness: ' + happiness;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -435,28 +462,28 @@ BasicGame.Game.prototype = {
     donation: function(stage) {
       switch(String(stage)) {
         case "start":
-          console.log("donation start");
-          eventText = this.game.add.text(300, 50, 'A poor man asks for money', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'A POOR MAN ASKS FOR MONEY', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
           answer1Text = this.game.add.text(300, 150, 'I am a generous man', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.donation("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Don\'t look at me', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.donation("no")}, this);
 
           break;
         case "yes":
-          console.log("donation yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godLaw > 40) {
+          if (godLaws > 40) {
             if (commandments + 25 > 100) {
               commandments = 100;
             } else {
@@ -464,9 +491,9 @@ BasicGame.Game.prototype = {
             }
           }
           wealth -= 20;
-          wealthText.text = 'Wealth: ' + wealth;
+          wealthText.text = 'WEALTH: ' + wealth;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
@@ -476,7 +503,7 @@ BasicGame.Game.prototype = {
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godLaw > 40) {
+          if (godLaws > 40) {
             if (commandments - 25 < 0) {
               commandments = 0;
             } else {
@@ -484,7 +511,7 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
@@ -496,27 +523,26 @@ BasicGame.Game.prototype = {
 
     },
 
-    compliment: function(stage) {
+    /*compliment: function(stage) { //change......
       switch(String(stage)) {
         case "start":
-          console.log("compliment start");
-          eventText = this.game.add.text(300, 50, 'A stranger says \"You look really great today\"', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'A stranger says \"You look really great today\"', { fontSize: '60px', fill: '#fff' });
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
           eventText.font = 'VT323';
           answer1Text = this.game.add.text(300, 150, 'Thank The Lord', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.compliment("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Dont Thank The Lord', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.compliment("no")}, this);
 
           break;
         case "yes": //happiness goes up a lil piety goes up a lot ish
-          console.log("compliment yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -535,13 +561,12 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no": //happiness goes up more piety takes slight hit depending on jealousy
-          console.log("compliment no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -560,7 +585,7 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -572,73 +597,101 @@ BasicGame.Game.prototype = {
 
 
     },
-
-
+*/
     divorce: function(stage) {
       switch(String(stage)) {
         case "start":
-          console.log("divorce start");
-          eventText = this.game.add.text(300, 50, 'ur wife wants a divorce', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOUR WIFE WANTS A DIVORCE', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
           answer1Text = this.game.add.text(300, 150, 'Curse The Lord', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.divorce("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'talk to ur therapist buddy', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, 'pray', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.divorce("no")}, this);
 
           break;
-        case "yes": //piety takes hit, happiness takes smaller hit?
-          console.log("divorce yes");
+        case "yes":
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
+          if (godJealousy > 65) {
+            if (piety - 40 < 0) {
               piety = 0;
             } else {
-              piety -= 25;
+              piety -= 40;
             }
           } else {
-            if (piety - 10 < 0) {
+            if (piety - 20 < 0) {
               piety = 0;
             } else {
-              piety -= 10;
+              piety -= 20;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning + 20 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 20;
+            }
+          } else {
+            if (questioning + 10 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 10;
+            }
+          }
+          happiness -= 10;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
-        case "no": //happiness takes smaller hit, piety takes BIG hit
-          console.log("divorce no");
+        case "no":
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
+          if (godJealousy > 65) {
+            if (piety + 25 < 100) {
+              piety = 100;
             } else {
-              piety -= 25;
+              piety += 25;
             }
           } else {
-            if (piety - 10 < 0) {
-              piety = 0;
+            if (piety + 15 < 100) {
+              piety = 100;
             } else {
-              piety -= 10;
+              piety += 15;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning - 20 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 20;
+            }
+          } else {
+            if (questioning - 10 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 10;
+            }
+          }
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -654,68 +707,96 @@ BasicGame.Game.prototype = {
     drought: function(stage) {
       switch(String(stage)) {
         case "start":
-          console.log("drought start");
-          eventText = this.game.add.text(300, 50, 'U have not seen a drop of water in 10 days', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOU HAVE NOT SEEN A DROP OF WATER IN 10 DAYS', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
           answer1Text = this.game.add.text(300, 150, 'appreciate the strange beauty of the cracked earth and withering crops', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.drought("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Curse The Lord', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.drought("no")}, this);
 
           break;
         case "yes":
-          console.log("drought yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
+            if (piety + 25 > 100) {
+              piety = 1000;
             } else {
-              piety -= 25;
+              piety += 25;
             }
           } else {
-            if (piety - 10 < 0) {
-              piety = 0;
+            if (piety + 10 > 100) {
+              piety = 100;
             } else {
-              piety -= 10;
+              piety += 10;
             }
           }
-
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          if (godIntelligence > 65) {
+            if (questioning - 20 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 20;
+            }
+          } else {
+            if (questioning - 10 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 10;
+            }
+          }
+          happiness -= 20;
+          happinessText.text = 'HAPPINESS: ' + happiness;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no":
-          console.log("drought no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) {
-            if (piety - 25 < 0) {
+            if (piety - 40 < 0) {
               piety = 0;
             } else {
-              piety -= 25;
+              piety -= 40;
             }
           } else {
-            if (piety - 10 < 0) {
+            if (piety - 20 < 0) {
               piety = 0;
             } else {
-              piety -= 10;
+              piety -= 20;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning + 20 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 20;
+            }
+          } else {
+            if (questioning + 10 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 10;
+            }
+          }
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -728,72 +809,99 @@ BasicGame.Game.prototype = {
 
     },
 
-
-    thunderstorm: function(stage) {
+    thunderstorm: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          console.log("thunderstorm start");
-          eventText = this.game.add.text(300, 50, 'There is a big thunderstorm and tornado', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'THERE IS A VERY LARGE THUNDERSTORM', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
-          answer1Text = this.game.add.text(300, 150, 'Are You There God? Its Me, Job', { fontSize: '60px', fill: '#fff' });
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
+          answer1Text = this.game.add.text(300, 150, 'Are You There God? Its Me, Job, And I Have Some Questions', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.thunderstorm("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'cry', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, 'pray', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.thunderstorm("no")}, this);
 
           break;
         case "yes":
-          console.log("thunderstorm yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godJealousy > 65) { //change
+          if (godJealousy > 65) {
             if (piety - 25 < 0) {
               piety = 0;
             } else {
               piety -= 25;
             }
           } else {
-            if (piety - 10 < 0) {
+            if (piety - 15 < 0) {
               piety = 0;
             } else {
-              piety -= 10;
+              piety -= 15;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning + 35 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 35;
+            }
+          } else {
+            if (questioning + 20 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 20;
+            }
+          }
+          happiness -= 15;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no":
-          console.log("thunderstorm no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
-          if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
+          if (godJealousy > 65) {
+            if (piety + 25 < 100) {
+              piety = 100;
             } else {
-              piety -= 25;
+              piety += 25;
             }
           } else {
-            if (piety - 10 < 0) {
-              piety = 0;
+            if (piety + 15 < 100) {
+              piety = 100;
             } else {
-              piety -= 10;
+              piety += 15;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning - 20 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 20;
+            }
+          } else {
+            if (questioning - 10 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 10;
+            }
+          }
+          happiness -=20;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -806,72 +914,100 @@ BasicGame.Game.prototype = {
 
     },
 
-
-    pustules: function(stage) {
+    pustules: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          console.log("pustules start");
-          eventText = this.game.add.text(300, 50, 'U r suddenly covered with massive pustules', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOU ARE AFFLICTED WITH MASSIVE BOILS', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
-          answer1Text = this.game.add.text(300, 150, 'scratch em with a pottery shard on ur dung heap', { fontSize: '60px', fill: '#fff' });
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
+          answer1Text = this.game.add.text(300, 150, 'scratch em with a pottery shard on your dung heap', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.pustules("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Curse God And Die', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.pustules("no")}, this);
 
           break;
         case "yes":
-          console.log("pustules yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
+            if (piety + 25 > 100) {
+              piety = 1000;
             } else {
-              piety -= 25;
+              piety += 25;
             }
           } else {
-            if (piety - 10 < 0) {
-              piety = 0;
+            if (piety + 10 > 100) {
+              piety = 100;
             } else {
-              piety -= 10;
+              piety += 10;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning - 20 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 20;
+            }
+          } else {
+            if (questioning - 10 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 10;
+            }
+          }
+          happiness -= 20;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no":
-          console.log("pustules no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) {
-            if (piety - 25 < 0) {
+            if (piety - 40 < 0) {
               piety = 0;
             } else {
-              piety -= 25;
+              piety -= 40;
             }
           } else {
-            if (piety - 10 < 0) {
+            if (piety - 20 < 0) {
               piety = 0;
             } else {
-              piety -= 10;
+              piety -= 20;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning + 20 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 20;
+            }
+          } else {
+            if (questioning + 10 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 10;
+            }
+          }
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -884,71 +1020,99 @@ BasicGame.Game.prototype = {
 
     },
 
-
-    children: function(stage) {
+    children: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          console.log("children start");
-          eventText = this.game.add.text(300, 50, 'All your children have died', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'ALL YOUR CHILDREN HAVE DIED', { fontSize: '60px', fill: '#fff' });
           eventText.font = 'VT323';
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
           answer1Text = this.game.add.text(300, 150, 'Its cool I will get new ones later if Im patient', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.children("yes")}, this);
           answer2Text = this.game.add.text(300, 200, 'Curse God And Die', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.children("no")}, this);
           break;
-        case "yes":
-          console.log("children yes");
+        case "yes": //piety up something is punished tho.....
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
+            if (piety + 25 > 100) {
+              piety = 1000;
             } else {
-              piety -= 25;
+              piety += 25;
             }
           } else {
-            if (piety - 10 < 0) {
-              piety = 0;
+            if (piety + 10 > 100) {
+              piety = 100;
             } else {
-              piety -= 10;
+              piety += 10;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning - 35 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 35;
+            }
+          } else {
+            if (questioning - 20 < 0) {
+              questioning = 0;
+            } else {
+              questioning -= 20;
+            }
+          }
+          happiness -= 10;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
-        case "no":
-          console.log("children no");
+        case "no": //questioning up piety down?
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
 
           if (godJealousy > 65) {
-            if (piety - 25 < 0) {
+            if (piety - 40 < 0) {
               piety = 0;
             } else {
-              piety -= 25;
+              piety -= 40;
             }
           } else {
-            if (piety - 10 < 0) {
+            if (piety - 20 < 0) {
               piety = 0;
             } else {
-              piety -= 10;
+              piety -= 20;
             }
           }
+          if (godIntelligence > 65) {
+            if (questioning + 20 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 20;
+            }
+          } else {
+            if (questioning + 10 > 100) {
+              questioning = 100;
+            } else {
+              questioning += 10;
+            }
+          }
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -961,26 +1125,26 @@ BasicGame.Game.prototype = {
 
     },
 
-    roof: function(stage) {
+    roof: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          console.log("roof start");
-          eventText = this.game.add.text(300, 50, 'your roof has caved in', { fontSize: '60px', fill: '#fff' });
+          eventText = this.game.add.text(300, 100, 'YOUR ROOF HAS CAVED IN', { fontSize: '75px', fill: '#fff' });
           eventText.font = 'VT323';
-          answer1Text = this.game.add.text(300, 150, 'I needed a new one anyway', { fontSize: '60px', fill: '#fff' });
+          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
+
+          answer1Text = this.game.add.text(300, 150, 'I needed a new one anyway', { fontSize: '50px', fill: '#fff' });
           answer1Text.font = 'VT323';
-          answer1Text.anchor.set(0.5);
+          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.roof("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'God...... why', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, 'God...... why', { fontSize: '50px', fill: '#fff' });
           answer2Text.font = 'VT323';
-          answer2Text.anchor.set(0.5);
+          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.roof("no")}, this);
 
           break;
         case "yes":
-          console.log("roof yes");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -999,14 +1163,13 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
         case "no":
-          console.log("roof no");
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();
@@ -1024,8 +1187,9 @@ BasicGame.Game.prototype = {
               piety -= 10;
             }
           }
+          questioning +=30;
 
-          random = Math.floor(Math.random() * (20000 - 6000)) + 6000;
+          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1035,6 +1199,56 @@ BasicGame.Game.prototype = {
         console.log("default ", stage);
       }
 
+
+    }, //change
+
+    endgame: function (pointer) {
+      //print out stats (piety etc)
+      //should i keep track of good/bad events?
+      //You pleased/didn't please God
+      //God does/doesn't care
+      ram.destroy();
+      ramtext.destroy();
+
+      pleasing = piety + commandments + questioning;
+      godPleased = godLaws + godJealousy + godIntelligence;
+      if (pleasing/godPleased > 0.5) {
+        var endText1 = this.game.add.text(300, 50, 'YOU PLEASED GOD', { fontSize: '60px', fill: '#fff' });
+        endText1.font = 'VT323';
+
+        if (godCares > 50) {
+          var endText2 = this.game.add.text(300, 200, 'YOU WILL BE REWARDED', { fontSize: '60px', fill: '#fff' });
+          endText2.font = 'VT323';
+
+        } else {
+          var endText2 = this.game.add.text(300, 200, 'GOD DOES NOT CARE', { fontSize: '60px', fill: '#fff' });
+          endText2.font = 'VT323';
+
+        }
+      } else {
+        var endText1 = this.game.add.text(300, 50, 'YOU DID NOT PLEASE GOD', { fontSize: '60px', fill: '#fff' });
+        endText1.font = 'VT323';
+
+        if (godCares > 50) {
+          var endText2 = this.game.add.text(300, 200, 'YOU WILL BE PUNISHED', { fontSize: '60px', fill: '#fff' });
+          endText2.font = 'VT323';
+
+        } else {
+          var endText2 = this.game.add.text(300, 200, 'GOD DOES NOT CARE', { fontSize: '60px', fill: '#fff' });
+          endText2.font = 'VT323';
+
+        }
+      }
+      endText1.anchor.set(Math.round(endText1.width * 0.5) / endText1.width);
+      endText2.anchor.set(Math.round(endText2.width * 0.5) / endText2.width);
+
+      var restart = this.game.add.text(300, 300, 'RESTART', { fontSize: '60px', fill: '#fff' });
+      restart.font = 'VT323';
+      restart.anchor.set(Math.round(restart.width * 0.5) / restart.width);
+      restart.inputEnabled = true;
+      restart.events.onInputDown.add(this.restart, this, restart);
+
+      //restart button
 
     },
 
