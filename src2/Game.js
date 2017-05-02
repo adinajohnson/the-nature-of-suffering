@@ -34,6 +34,8 @@ BasicGame.Game = function (game) {
   var ram;
   var timeCheck;
   var ramtext;
+  var thunder;
+  var overlay;
 };
 
 BasicGame.Game.prototype = {
@@ -62,7 +64,7 @@ BasicGame.Game.prototype = {
       this.game.stage.backgroundColor = "#b4a58d";
       job = this.game.add.sprite(200, 0, "job");
       job.animations.add("blink", [0,1,0], 10, false);
-      ram = this.game.add.sprite(300, 500, "ram", "ram.png")
+      ram = this.game.add.sprite(300, 500, "ram", "ram.png");
       ramtext = this.game.add.text(260, 525, 'SACRIFICE', { fontSize: '45px', fill: '#fff' });
       ramtext.font = 'VT323';
       ram.anchor.set(0.5);
@@ -76,7 +78,7 @@ BasicGame.Game.prototype = {
 
       this.timer();
       myself = this;
-      random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+      random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
       eventTimer = myself.game.time.create(true);
       eventTimer.add(random, myself.event, myself.game);
       eventTimer.start();
@@ -173,7 +175,7 @@ BasicGame.Game.prototype = {
           if (defaultnum > 2) {
             myself.endgame(0);
           } else {
-            random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+            random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
             eventTimer = myself.game.time.create(true);
             eventTimer.add(random, myself.event, myself.game);
@@ -187,7 +189,9 @@ BasicGame.Game.prototype = {
     abraham: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'GOD SAYS: KILL ME A SON', { fontSize: '75px', fill: '#fff', wordWrap: true, wordWrapWidth: 600});
+          overlay = this.game.add.sprite(0, 75, "overlay");
+          overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'GOD SAYS: KILL ME A SON', { fontSize: '75px', fill: '#000', wordWrap: true, wordWrapWidth: 600});
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
           eventText.font = 'VT323';
           continueText = this.game.add.text(300, 150, 'Man, you must be puttin\' me on', { fontSize: '60px', fill: '#fff' });
@@ -229,7 +233,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
           if (godLaws <= 75 || godJealousy > 75) {
             if (piety + 50 > 100) {
               piety = 100;
@@ -255,7 +259,7 @@ BasicGame.Game.prototype = {
           }
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -264,7 +268,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
           if (godLaws <= 60 || godJealousy > 60) { //if God doesnt value commandments too much or really values piety
             if (piety + 50 > 100) {
               piety = 100;
@@ -288,7 +292,7 @@ BasicGame.Game.prototype = {
               commandments -= 50;
             }
           }
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -304,7 +308,9 @@ BasicGame.Game.prototype = {
     windfall: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOU WIN A LOT OF MONEY', { fontSize: '60px', fill: '#fff' });
+          overlay = this.game.add.sprite(0, 75, "overlay");
+          overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOU WIN A LOT OF MONEY', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
           answer1Text = this.game.add.text(300, 150, 'Great I will take it', { fontSize: '60px', fill: '#fff' });
@@ -322,7 +328,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 40 < 0) {
@@ -339,7 +345,7 @@ BasicGame.Game.prototype = {
           }
           wealth += 50;
           wealthText.text = 'WEALTH: ' + wealth;
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -348,7 +354,8 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
+          overlay.destroy();
 
           if (godJealousy > 70) {
             if (piety + 40 > 100) {
@@ -366,7 +373,7 @@ BasicGame.Game.prototype = {
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -382,7 +389,9 @@ BasicGame.Game.prototype = {
     fertility: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOUR WIFE IS VERY PREGNANT', { fontSize: '60px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOUR WIFE IS VERY PREGNANT', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -401,7 +410,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety + 30 > 100) {
@@ -419,7 +428,7 @@ BasicGame.Game.prototype = {
           happiness += 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -428,7 +437,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 25 < 0) {
@@ -446,7 +455,7 @@ BasicGame.Game.prototype = {
           happiness += 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -462,7 +471,9 @@ BasicGame.Game.prototype = {
     donation: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'A POOR MAN ASKS FOR MONEY', { fontSize: '60px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'A POOR MAN ASKS FOR MONEY', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -481,7 +492,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
 
           if (godLaws > 40) {
             if (commandments + 25 > 100) {
@@ -493,7 +504,7 @@ BasicGame.Game.prototype = {
           wealth -= 20;
           wealthText.text = 'WEALTH: ' + wealth;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
@@ -501,7 +512,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godLaws > 40) {
             if (commandments - 25 < 0) {
@@ -511,7 +522,7 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
@@ -545,7 +556,7 @@ BasicGame.Game.prototype = {
         case "yes": //happiness goes up a lil piety goes up a lot ish
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
 
           if (godJealousy > 65) { //change
             if (piety - 25 < 0) {
@@ -561,7 +572,7 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
@@ -569,7 +580,7 @@ BasicGame.Game.prototype = {
         case "no": //happiness goes up more piety takes slight hit depending on jealousy
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 25 < 0) {
@@ -585,7 +596,7 @@ BasicGame.Game.prototype = {
             }
           }
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -601,7 +612,9 @@ BasicGame.Game.prototype = {
     divorce: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOUR WIFE WANTS A DIVORCE', { fontSize: '60px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOUR WIFE WANTS A DIVORCE', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -620,7 +633,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 40 < 0) {
@@ -651,7 +664,7 @@ BasicGame.Game.prototype = {
           happiness -= 10;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -660,7 +673,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety + 25 < 100) {
@@ -691,7 +704,7 @@ BasicGame.Game.prototype = {
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -707,7 +720,9 @@ BasicGame.Game.prototype = {
     drought: function(stage) {
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOU HAVE NOT SEEN A DROP OF WATER IN 10 DAYS', { fontSize: '60px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOU HAVE NOT SEEN A DROP OF WATER IN 10 DAYS', { fontSize: '60px', fill: '#000', wordWrap: true, wordWrapWidth: 600 });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -726,7 +741,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) { //change
             if (piety + 25 > 100) {
@@ -756,7 +771,7 @@ BasicGame.Game.prototype = {
           }
           happiness -= 20;
           happinessText.text = 'HAPPINESS: ' + happiness;
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -765,7 +780,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 40 < 0) {
@@ -796,7 +811,7 @@ BasicGame.Game.prototype = {
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -812,7 +827,12 @@ BasicGame.Game.prototype = {
     thunderstorm: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'THERE IS A VERY LARGE THUNDERSTORM', { fontSize: '60px', fill: '#fff' });
+
+          thunder = this.game.add.sprite(250, 0, "thunder")
+          job.bringToTop();
+          overlay = this.game.add.sprite(0, 75, "overlay");
+          overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'THERE IS A VERY LARGE THUNDERSTORM', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -831,7 +851,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 25 < 0) {
@@ -862,7 +882,7 @@ BasicGame.Game.prototype = {
           happiness -= 15;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -871,7 +891,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety + 25 < 100) {
@@ -901,7 +921,7 @@ BasicGame.Game.prototype = {
           }
           happiness -=20;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -917,10 +937,13 @@ BasicGame.Game.prototype = {
     pustules: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOU ARE AFFLICTED WITH MASSIVE BOILS', { fontSize: '60px', fill: '#fff' });
+
+          job = this.game.add.sprite(200, 0, "jobpus");
+          overlay = this.game.add.sprite(0, 75, "overlay");
+          overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOU ARE AFFLICTED WITH MASSIVE BOILS', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
-
           answer1Text = this.game.add.text(300, 150, 'scratch em with a pottery shard on your dung heap', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
@@ -931,12 +954,11 @@ BasicGame.Game.prototype = {
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.pustules("no")}, this);
-
           break;
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) { //change
             if (piety + 25 > 100) {
@@ -967,7 +989,7 @@ BasicGame.Game.prototype = {
           happiness -= 20;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -976,7 +998,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 40 < 0) {
@@ -1007,7 +1029,7 @@ BasicGame.Game.prototype = {
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1023,7 +1045,9 @@ BasicGame.Game.prototype = {
     children: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'ALL YOUR CHILDREN HAVE DIED', { fontSize: '60px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'ALL YOUR CHILDREN HAVE DIED', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -1041,7 +1065,7 @@ BasicGame.Game.prototype = {
         case "yes": //piety up something is punished tho.....
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) { //change
             if (piety + 25 > 100) {
@@ -1072,7 +1096,7 @@ BasicGame.Game.prototype = {
           happiness -= 10;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1081,7 +1105,7 @@ BasicGame.Game.prototype = {
         case "no": //questioning up piety down?
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 40 < 0) {
@@ -1112,7 +1136,7 @@ BasicGame.Game.prototype = {
           happiness -= 25;
           happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1128,7 +1152,9 @@ BasicGame.Game.prototype = {
     roof: function(stage) { //change
       switch(String(stage)) {
         case "start":
-          eventText = this.game.add.text(300, 100, 'YOUR ROOF HAS CAVED IN', { fontSize: '75px', fill: '#fff' });
+        overlay = this.game.add.sprite(0, 75, "overlay");
+        overlay.alpha = 0.6;
+          eventText = this.game.add.text(300, 100, 'YOUR ROOF HAS CAVED IN', { fontSize: '75px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
@@ -1147,7 +1173,7 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();
 
           if (godJealousy > 65) { //change
             if (piety - 25 < 0) {
@@ -1162,8 +1188,10 @@ BasicGame.Game.prototype = {
               piety -= 10;
             }
           }
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1172,7 +1200,7 @@ BasicGame.Game.prototype = {
         case "no":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();
+          answer2Text.destroy();overlay.destroy();overlay.destroy();
 
           if (godJealousy > 65) {
             if (piety - 25 < 0) {
@@ -1188,8 +1216,10 @@ BasicGame.Game.prototype = {
             }
           }
           questioning +=30;
+          happiness -= 25;
+          happinessText.text = 'HAPPINESS: ' + happiness;
 
-          random = Math.floor(Math.random() * (12000 - 4000)) + 4000;
+          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
 
           eventTimer = myself.game.time.create(true);
           eventTimer.add(random, myself.event, myself.game);
@@ -1209,6 +1239,7 @@ BasicGame.Game.prototype = {
       //God does/doesn't care
       ram.destroy();
       ramtext.destroy();
+
 
       pleasing = piety + commandments + questioning;
       godPleased = godLaws + godJealousy + godIntelligence;

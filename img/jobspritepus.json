@@ -1,0 +1,28 @@
+{"frames": [
+
+{
+	"filename": "jobpus.png",
+	"frame": {"x":0,"y":0,"w":150,"h":368},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":150,"h":368},
+	"sourceSize": {"w":150,"h":368}
+},
+{
+	"filename": "jobpus2.png",
+	"frame": {"x":0,"y":368,"w":150,"h":368},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":150,"h":368},
+	"sourceSize": {"w":150,"h":368}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "jobspritepus.png",
+	"format": "RGBA8888",
+	"size": {"w":150,"h":736},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:94efe43ed65f499542d297a06e666cbd:285d96c89a94f400e2cbd6ccedde128e:def4c5804950a66f1a8ce0a2742f67be$"
+}
+}

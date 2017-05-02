@@ -13,13 +13,14 @@ BasicGame.Preloader.prototype = {
 
 
 	preload: function () {
-	//	this.load.atlas('tiles', 'tiles.png', 'tiles.json'); //loads images for tiles
-		this.load.image('play', 'img/play.png');
-		//this.load.image('job', 'img/jobsprite.png');
 		this.load.image('ram', 'img/ram.png');
-		this.load.image('yes', 'img/yes-button.png');
-		this.load.image('no', 'img/no-button.jpg');
 		this.load.spritesheet('job', 'img/jobspriteblink.png', 150, 368);
+		this.load.spritesheet('jobpus', 'img/jobspritepus.png', 150, 368);
+		this.load.image('thunder', 'img/thunderstorm.png');
+		this.load.image('overlay', 'img/overlay.png');
+
+
+
 
 
 
