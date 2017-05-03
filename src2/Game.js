@@ -41,11 +41,20 @@ BasicGame.Game = function (game) {
   var wife;
   var baby1;
   var baby2;
+
+  var baa;
+  var babylaugh;
+  var babycry;
 };
 
 BasicGame.Game.prototype = {
 
     create: function () {
+
+      baa = this.game.add.audio('baa');
+      babylaugh = this.game.add.audio('babylaugh');
+      babycry = this.game.add.audio('babycry');
+
       defaultnum = 0;
 
       piety = 50;
@@ -80,6 +89,8 @@ BasicGame.Game.prototype = {
       ram.anchor.set(0.5);
       ram.inputEnabled = true;
       ram.events.onInputDown.add(this.sacrifice, this, ram);
+
+
 
       food = this.game.add.sprite(225, 500, "bread");
       foodtext = this.game.add.text(185, 525, 'FEAST', { fontSize: '45px', fill: '#fff' });
@@ -120,6 +131,7 @@ BasicGame.Game.prototype = {
     sacrifice: function(ram) {
 
       if (wealth>0) {
+        baa.play();
         wealth -= 1;
         wealthText.text = 'WEALTH: ' + wealth;
         piety += godJealousy%10 + 1;
@@ -221,7 +233,7 @@ BasicGame.Game.prototype = {
       switch(String(stage)) {
         case "start":
 
-
+          babylaugh.play();
           overlay = this.game.add.sprite(0, 75, "overlay");
           overlay.alpha = 0.6;
           eventText = this.game.add.text(300, 100, 'GOD SAYS: KILL ME A SON', { fontSize: '75px', fill: '#000', wordWrap: true, wordWrapWidth: 600});
@@ -264,6 +276,7 @@ BasicGame.Game.prototype = {
 
           break;
         case "yes":
+          babycry.play();
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();overlay.destroy();
@@ -302,6 +315,7 @@ BasicGame.Game.prototype = {
           eventTimer.start();
           break;
         case "no":
+          babylaugh.play();
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();overlay.destroy();
@@ -425,6 +439,7 @@ BasicGame.Game.prototype = {
     fertility: function(stage) {
       switch(String(stage)) {
         case "start":
+        babylaugh.play();
         baby2 = this.game.add.sprite(100, 250, "baby");
 
         overlay = this.game.add.sprite(0, 75, "overlay");
@@ -650,6 +665,7 @@ BasicGame.Game.prototype = {
     divorce: function(stage) {
       switch(String(stage)) {
         case "start":
+          babycry.play();
           wife.destroy();
           var index = goodEvents.indexOf("fertility");
           if (index > -1) {
@@ -1088,6 +1104,7 @@ BasicGame.Game.prototype = {
     children: function(stage) { //change
       switch(String(stage)) {
         case "start":
+          babycry.play();
           if (typeof baby1 !== "undefined") {
             baby1.destroy();
           }

@@ -26,7 +26,9 @@ BasicGame.Preloader.prototype = {
 		this.load.image('overlay', 'img/overlay.png');
 
 
-
+		this.load.audio('baa', 'sound/baa2.mp3');
+		this.load.audio('babylaugh', 'sound/babylaugh.mp3');
+		this.load.audio('babycry', 'sound/babycry.mp3');
 
 
 
