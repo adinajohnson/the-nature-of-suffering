@@ -36,6 +36,8 @@ BasicGame.Game = function (game) {
   var ramtext;
   var thunder;
   var overlay;
+  var food;
+  var foodtext;
 };
 
 BasicGame.Game.prototype = {
@@ -64,12 +66,21 @@ BasicGame.Game.prototype = {
       this.game.stage.backgroundColor = "#b4a58d";
       job = this.game.add.sprite(200, 0, "job");
       job.animations.add("blink", [0,1,0], 10, false);
-      ram = this.game.add.sprite(300, 500, "ram", "ram.png");
-      ramtext = this.game.add.text(260, 525, 'SACRIFICE', { fontSize: '45px', fill: '#fff' });
+
+      ram = this.game.add.sprite(375, 500, "ram", "ram.png");
+      ramtext = this.game.add.text(335, 525, 'SACRIFICE', { fontSize: '45px', fill: '#fff' });
       ramtext.font = 'VT323';
       ram.anchor.set(0.5);
       ram.inputEnabled = true;
       ram.events.onInputDown.add(this.sacrifice, this, ram);
+
+      food = this.game.add.sprite(225, 500, "bread");
+      foodtext = this.game.add.text(185, 525, 'FEAST', { fontSize: '45px', fill: '#fff' });
+      foodtext.font = 'VT323';
+      food.anchor.set(0.5);
+      food.inputEnabled = true;
+      food.events.onInputDown.add(this.feast, this, food);
+
 
       wealthText = this.game.add.text(15, 15, 'WEALTH: 50', { fontSize: '45px', fill: '#fff' });
       wealthText.font = 'VT323';
@@ -106,6 +117,19 @@ BasicGame.Game.prototype = {
         wealthText.text = 'WEALTH: ' + wealth;
         piety += godJealousy%10 + 1;
       }
+    },
+
+    feast: function(food) {
+
+      if (wealth>0) {
+        wealth -= 1;
+        wealthText.text = 'WEALTH: ' + wealth;
+        piety += godJealousy%10 + 1;
+        happiness += 1;
+        happinessText.text = 'HAPPINESS: ' + happiness;
+        piety -= godJealousy%10;
+      }
+
     },
 
     event: function() {
@@ -1244,7 +1268,7 @@ BasicGame.Game.prototype = {
       pleasing = piety + commandments + questioning;
       godPleased = godLaws + godJealousy + godIntelligence;
       if (pleasing/godPleased > 0.5) {
-        var endText1 = this.game.add.text(300, 50, 'YOU PLEASED GOD', { fontSize: '60px', fill: '#fff' });
+        var endText1 = this.game.add.text(300, 100, 'YOU PLEASED GOD', { fontSize: '60px', fill: '#fff' });
         endText1.font = 'VT323';
 
         if (godCares > 50) {
@@ -1257,7 +1281,7 @@ BasicGame.Game.prototype = {
 
         }
       } else {
-        var endText1 = this.game.add.text(300, 50, 'YOU DID NOT PLEASE GOD', { fontSize: '60px', fill: '#fff' });
+        var endText1 = this.game.add.text(300, 100, 'YOU DID NOT PLEASE GOD', { fontSize: '60px', fill: '#fff' });
         endText1.font = 'VT323';
 
         if (godCares > 50) {
