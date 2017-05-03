@@ -38,6 +38,9 @@ BasicGame.Game = function (game) {
   var overlay;
   var food;
   var foodtext;
+  var wife;
+  var baby1;
+  var baby2;
 };
 
 BasicGame.Game.prototype = {
@@ -65,6 +68,10 @@ BasicGame.Game.prototype = {
 
       this.game.stage.backgroundColor = "#b4a58d";
       job = this.game.add.sprite(200, 0, "job");
+      wife = this.game.add.sprite(300, 0, "wife");
+      baby1 = this.game.add.sprite(150, 250, "baby");
+
+
       job.animations.add("blink", [0,1,0], 10, false);
 
       ram = this.game.add.sprite(375, 500, "ram", "ram.png");
@@ -213,12 +220,14 @@ BasicGame.Game.prototype = {
     abraham: function(stage) {
       switch(String(stage)) {
         case "start":
+
+
           overlay = this.game.add.sprite(0, 75, "overlay");
           overlay.alpha = 0.6;
           eventText = this.game.add.text(300, 100, 'GOD SAYS: KILL ME A SON', { fontSize: '75px', fill: '#000', wordWrap: true, wordWrapWidth: 600});
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
           eventText.font = 'VT323';
-          continueText = this.game.add.text(300, 150, 'Man, you must be puttin\' me on', { fontSize: '60px', fill: '#fff' });
+          continueText = this.game.add.text(300, 150, '>Man, you must be puttin\' me on', { fontSize: '60px', fill: '#fff' });
           continueText.font = 'VT323';
           continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
@@ -226,14 +235,14 @@ BasicGame.Game.prototype = {
           break;
         case "continue1":
           eventText.text = 'NO';
-          continueText.text = 'What';
+          continueText.text = '>What';
           continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
           continueText.events.onInputDown.add(function(text){myself.abraham("continue2")}, this);
           break;
         case "continue2":
           eventText.text = 'YOU CAN DO WHAT YOU WANT, BUT THE NEXT TIME YOU SEE ME COMIN\' YOU BETTER RUN';
-          continueText.text = 'Where d\'you want this killin\' done?';
+          continueText.text = '>Where d\'you want this killin\' done?';
           continueText.anchor.set(Math.round(continueText.width * 0.5) / continueText.width);
           continueText.inputEnabled = true;
           continueText.events.onInputDown.add(function(text){myself.abraham("continue3")}, this);
@@ -241,13 +250,13 @@ BasicGame.Game.prototype = {
         case "continue3":
           eventText.text = 'OUT ON HIGHWAY 61';
           continueText.destroy();
-          answer1Text = this.game.add.text(300, 150, 'Okay see you in 3 days', { fontSize: '55px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>Okay see you in 3 days', { fontSize: '55px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.abraham("yes")}, this);
 
-          answer2Text = this.game.add.text(300, 200, 'I\'m good thanks', { fontSize: '55px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>I\'m good thanks', { fontSize: '55px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -257,7 +266,10 @@ BasicGame.Game.prototype = {
         case "yes":
           eventText.destroy();
           answer1Text.destroy();
-          answer2Text.destroy();overlay.destroy();overlay.destroy();
+          answer2Text.destroy();overlay.destroy();
+          if (typeof baby1 !== "undefined") {
+            baby1.destroy();
+          }
           if (godLaws <= 75 || godJealousy > 75) {
             if (piety + 50 > 100) {
               piety = 100;
@@ -337,12 +349,12 @@ BasicGame.Game.prototype = {
           eventText = this.game.add.text(300, 100, 'YOU WIN A LOT OF MONEY', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
-          answer1Text = this.game.add.text(300, 150, 'Great I will take it', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>Great I will take it', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.windfall("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'No I love God too much to take this money', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>No I love God too much to take this money', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -413,18 +425,20 @@ BasicGame.Game.prototype = {
     fertility: function(stage) {
       switch(String(stage)) {
         case "start":
+        baby2 = this.game.add.sprite(100, 250, "baby");
+
         overlay = this.game.add.sprite(0, 75, "overlay");
         overlay.alpha = 0.6;
           eventText = this.game.add.text(300, 100, 'YOUR WIFE IS VERY PREGNANT', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'Thank The Lord', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>Thank The Lord', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.fertility("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Ok cool', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>Ok cool', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -501,12 +515,12 @@ BasicGame.Game.prototype = {
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'I am a generous man', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>I am a generous man', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.donation("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Don\'t look at me', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>Don\'t look at me', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -636,18 +650,23 @@ BasicGame.Game.prototype = {
     divorce: function(stage) {
       switch(String(stage)) {
         case "start":
+          wife.destroy();
+          var index = goodEvents.indexOf("fertility");
+          if (index > -1) {
+            goodEvents.splice(index, 1);
+          }
         overlay = this.game.add.sprite(0, 75, "overlay");
         overlay.alpha = 0.6;
           eventText = this.game.add.text(300, 100, 'YOUR WIFE WANTS A DIVORCE', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'Curse The Lord', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>Curse The Lord', { fontSize: '60px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.divorce("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'pray', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>pray', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -750,12 +769,12 @@ BasicGame.Game.prototype = {
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'appreciate the strange beauty of the cracked earth and withering crops', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>appreciate the strange beauty of the cracked earth and withering crops', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600});
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.drought("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Curse The Lord', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>Curse The Lord', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -860,12 +879,12 @@ BasicGame.Game.prototype = {
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'Are You There God? Its Me, Job, And I Have Some Questions', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
+          answer1Text = this.game.add.text(300, 150, '>Are You There God? Its Me, Job, And I Have Some Questions', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.thunderstorm("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'pray', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>pray', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -968,12 +987,12 @@ BasicGame.Game.prototype = {
           eventText = this.game.add.text(300, 100, 'YOU ARE AFFLICTED WITH MASSIVE BOILS', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
-          answer1Text = this.game.add.text(300, 150, 'scratch em with a pottery shard on your dung heap', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
+          answer1Text = this.game.add.text(300, 150, '>scratch em with a pottery shard on your dung heap', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.pustules("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Curse God And Die', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>Curse God And Die', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -1069,18 +1088,24 @@ BasicGame.Game.prototype = {
     children: function(stage) { //change
       switch(String(stage)) {
         case "start":
+          if (typeof baby1 !== "undefined") {
+            baby1.destroy();
+          }
+          if (typeof baby2 !== "undefined") {
+            baby2.destroy();
+          }
         overlay = this.game.add.sprite(0, 75, "overlay");
         overlay.alpha = 0.6;
           eventText = this.game.add.text(300, 100, 'ALL YOUR CHILDREN HAVE DIED', { fontSize: '60px', fill: '#000' });
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'Its cool I will get new ones later if Im patient', { fontSize: '60px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>Its cool I will get new ones later if Im patient', { fontSize: '60px', fill: '#fff', wordWrap: true, wordWrapWidth: 600 });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.children("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Curse God And Die', { fontSize: '60px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>Curse God And Die', { fontSize: '60px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -1182,12 +1207,12 @@ BasicGame.Game.prototype = {
           eventText.font = 'VT323';
           eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
 
-          answer1Text = this.game.add.text(300, 150, 'I needed a new one anyway', { fontSize: '50px', fill: '#fff' });
+          answer1Text = this.game.add.text(300, 150, '>I needed a new one anyway', { fontSize: '50px', fill: '#fff' });
           answer1Text.font = 'VT323';
           answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
           answer1Text.inputEnabled = true;
           answer1Text.events.onInputDown.add(function(text){myself.roof("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'God...... why', { fontSize: '50px', fill: '#fff' });
+          answer2Text = this.game.add.text(300, 200, '>God...... why', { fontSize: '50px', fill: '#fff' });
           answer2Text.font = 'VT323';
           answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
           answer2Text.inputEnabled = true;
@@ -1263,6 +1288,8 @@ BasicGame.Game.prototype = {
       //God does/doesn't care
       ram.destroy();
       ramtext.destroy();
+      food.destroy();
+      foodtext.destroy();
 
 
       pleasing = piety + commandments + questioning;
