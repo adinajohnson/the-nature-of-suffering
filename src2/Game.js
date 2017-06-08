@@ -1,5 +1,6 @@
 BasicGame.Game = function (game) {
 
+  //personal variables
   var piety;
   var commandments;
   var questioning;
@@ -7,7 +8,7 @@ BasicGame.Game = function (game) {
   var happiness;
   var pleasing;
 
-
+  //"environmental" variables
   var luck;
   var godCares;
   var godLaws;
@@ -15,33 +16,39 @@ BasicGame.Game = function (game) {
   var godIntelligence;
   var godPleased;
 
+  //main sprites
+  var job;
+  var wife;
+  var baby1;
+  var baby2;
+  var thunder;
+  var overlay;
+
+  //text to keep track of wealth & happiness
   var wealthText;
-  var events;
-  var randomEvent;
-  var random;
-  var eventTimer;
-  var myself;
-  var yes;
-  var no;
-  var done;
+  var happinessText;
+
+  //text (question & answers) for random events
   var eventText;
   var continueText;
   var answer1Text;
   var answer2Text;
-  var happinessText;
-  var defaultnum;
-  var job;
-  var ram;
-  var timeCheck;
-  var ramtext;
-  var thunder;
-  var overlay;
+
+  //sprites & text for permanent actions (sacrifice & feast)
   var food;
   var foodtext;
-  var wife;
-  var baby1;
-  var baby2;
+  var ram;
+  var ramtext;
 
+  //variables to calculate events
+  var randomEvent;
+  var random;
+  var eventTimer;
+  var timeCheck;
+  var myself;
+  var defaultnum; //keeps track of when no events can be found
+
+  //sounds
   var baa;
   var babylaugh;
   var babycry;
@@ -51,10 +58,12 @@ BasicGame.Game.prototype = {
 
     create: function () {
 
+      //add sounds
       baa = this.game.add.audio('baa');
       babylaugh = this.game.add.audio('babylaugh');
       babycry = this.game.add.audio('babycry');
 
+      //initialize variables
       defaultnum = 0;
 
       piety = 50;
@@ -71,17 +80,17 @@ BasicGame.Game.prototype = {
       godIntelligence = Math.floor(Math.random() * 100);
       godPleased = godLaws + godJealousy + godIntelligence;
 
-      goodEvents = ["abraham", "windfall", "fertility", "donation"]; //some of these tend to happen tooearly
+      //arrays of possible events
+      goodEvents = ["abraham", "windfall", "fertility", "donation"];
       badEvents = ["thunderstorm", "pustules", "children", "roof", "divorce", "drought"];
-      //ideas not yet implemented: "seduction", "horse", "flood"
 
+      //add sprites
       this.game.stage.backgroundColor = "#b4a58d";
       job = this.game.add.sprite(200, 0, "job");
       wife = this.game.add.sprite(300, 0, "wife");
       baby1 = this.game.add.sprite(150, 250, "baby");
 
-
-      job.animations.add("blink", [0,1,0], 10, false);
+      job.animations.add("blink", [0,1,0], 10, false); //makes job blink
 
       ram = this.game.add.sprite(375, 500, "ram", "ram.png");
       ramtext = this.game.add.text(335, 525, 'SACRIFICE', { fontSize: '45px', fill: '#fff' });
@@ -90,8 +99,6 @@ BasicGame.Game.prototype = {
       ram.inputEnabled = true;
       ram.events.onInputDown.add(this.sacrifice, this, ram);
 
-
-
       food = this.game.add.sprite(225, 500, "bread");
       foodtext = this.game.add.text(185, 525, 'FEAST', { fontSize: '45px', fill: '#fff' });
       foodtext.font = 'VT323';
@@ -99,12 +106,12 @@ BasicGame.Game.prototype = {
       food.inputEnabled = true;
       food.events.onInputDown.add(this.feast, this, food);
 
-
       wealthText = this.game.add.text(15, 15, 'WEALTH: 50', { fontSize: '45px', fill: '#fff' });
       wealthText.font = 'VT323';
       happinessText = this.game.add.text(15, 45, 'HAPPINESS: 50', { fontSize: '45px', fill: '#fff' });
       happinessText.font = 'VT323';
 
+      //makes events happen semi-randomly
       this.timer();
       myself = this;
       random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
@@ -115,7 +122,7 @@ BasicGame.Game.prototype = {
     },
 
     update: function () {
-      // test for 3 second delay
+      // make Job blink every 3 seconds
       if (this.game.time.now - timeCheck > 3000){
         job.animations.play("blink");
         myself.timer();
@@ -129,8 +136,7 @@ BasicGame.Game.prototype = {
 
 
     sacrifice: function(ram) {
-
-      if (wealth>0) {
+      if (wealth>0) { //make sure you have a ram to sacrifice!
         baa.play();
         wealth -= 1;
         wealthText.text = 'WEALTH: ' + wealth;
@@ -140,7 +146,7 @@ BasicGame.Game.prototype = {
 
     feast: function(food) {
 
-      if (wealth>0) {
+      if (wealth>0) { //make sure you have enough food to feast!
         wealth -= 1;
         wealthText.text = 'WEALTH: ' + wealth;
         piety += godJealousy%10 + 1;
@@ -152,74 +158,61 @@ BasicGame.Game.prototype = {
     },
 
     event: function() {
-      pleasing = piety + commandments + questioning;
-      godPleased = godLaws + godJealousy + godIntelligence;
+      pleasing = piety + commandments + questioning; //calculate how good you've been
+      godPleased = godLaws + godJealousy + godIntelligence; //calculate how much God cares
       var randomCares = Math.floor(Math.random() * (60 - 10)) + 10;
       var randomLuck = Math.floor(Math.random() * (60 - 10)) + 10;
-      if (godCares > randomCares) {
-        if (pleasing/godPleased > 0.5) {
+      if (godCares > randomCares) { //if God cares more than a semi-random amount
+        if (pleasing/godPleased > 0.5) { //if God is pleased
           randomEvent = goodEvents.splice([Math.floor(Math.random() * goodEvents.length)], 1);
-        } else {
+        } else { //God is not pleased
           randomEvent = badEvents.splice([Math.floor(Math.random() * badEvents.length)], 1);
         }
-      } else if ((luck > randomLuck) && wealth > 15) {
+      } else if ((luck > randomLuck) && wealth > 15) { //God doesn't really care but your luck is good
         randomEvent = goodEvents.splice([Math.floor(Math.random() * goodEvents.length)], 1);
       } else {
         randomEvent = badEvents.splice([Math.floor(Math.random() * badEvents.length)], 1);
       }
-      switch(String(randomEvent)) {
+      switch(String(randomEvent)) { //starts corresponding function for event selected
         case "abraham":
-          //console.log("abraham");
           myself.abraham("start");
           break;
         case "thunderstorm":
-          //console.log("thunderstorm");
           myself.thunderstorm("start");
           break;
         case "pustules":
-          //console.log("pustules");
           myself.pustules("start");
           break;
         case "children":
-          //console.log("children");
           myself.children("start");
           break;
         case "roof":
-          //console.log("roof");
           myself.roof("start");
           break;
         case "compliment":
-          //console.log("compliment");
           myself.compliment("start");
           break;
         case "donation":
-          //console.log("donation");
           myself.donation("start");
           break;
         case "divorce":
-          //console.log("divorce");
           myself.divorce("start");
           break;
         case "drought":
-          //console.log("drought");
           myself.drought("start");
           break;
         case "windfall":
-          //console.log("windfall");
           myself.windfall("start");
           break;
         case "fertility":
-          //console.log("fertility");
           myself.fertility("start");
           break;
         default:
-          console.log("default " + randomEvent);
           defaultnum++;
-          if (defaultnum > 2) {
+          if (defaultnum > 2) { //if no more events seem to be available
             myself.endgame(0);
-          } else {
+          } else { //wait a little bit then pick another event
             random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
-
             eventTimer = myself.game.time.create(true);
             eventTimer.add(random, myself.event, myself.game);
             eventTimer.start();
@@ -230,9 +223,8 @@ BasicGame.Game.prototype = {
     },
 
     abraham: function(stage) {
-      switch(String(stage)) {
+      switch(String(stage)) { //initial choice
         case "start":
-
           babylaugh.play();
           overlay = this.game.add.sprite(0, 75, "overlay");
           overlay.alpha = 0.6;
@@ -587,81 +579,6 @@ BasicGame.Game.prototype = {
 
     },
 
-    /*compliment: function(stage) { //change......
-      switch(String(stage)) {
-        case "start":
-          eventText = this.game.add.text(300, 100, 'A stranger says \"You look really great today\"', { fontSize: '60px', fill: '#fff' });
-          eventText.anchor.set(Math.round(eventText.width * 0.5) / eventText.width);
-
-          eventText.font = 'VT323';
-          answer1Text = this.game.add.text(300, 150, 'Thank The Lord', { fontSize: '60px', fill: '#fff' });
-          answer1Text.font = 'VT323';
-          answer1Text.anchor.set(Math.round(answer1Text.width * 0.5) / answer1Text.width);
-          answer1Text.inputEnabled = true;
-          answer1Text.events.onInputDown.add(function(text){myself.compliment("yes")}, this);
-          answer2Text = this.game.add.text(300, 200, 'Dont Thank The Lord', { fontSize: '60px', fill: '#fff' });
-          answer2Text.font = 'VT323';
-          answer2Text.anchor.set(Math.round(answer2Text.width * 0.5) / answer2Text.width);
-          answer2Text.inputEnabled = true;
-          answer2Text.events.onInputDown.add(function(text){myself.compliment("no")}, this);
-
-          break;
-        case "yes": //happiness goes up a lil piety goes up a lot ish
-          eventText.destroy();
-          answer1Text.destroy();
-          answer2Text.destroy();overlay.destroy();overlay.destroy();
-
-          if (godJealousy > 65) { //change
-            if (piety - 25 < 0) {
-              piety = 0;
-            } else {
-              piety -= 25;
-            }
-          } else {
-            if (piety - 10 < 0) {
-              piety = 0;
-            } else {
-              piety -= 10;
-            }
-          }
-
-          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
-          eventTimer = myself.game.time.create(true);
-          eventTimer.add(random, myself.event, myself.game);
-          eventTimer.start();
-          break;
-        case "no": //happiness goes up more piety takes slight hit depending on jealousy
-          eventText.destroy();
-          answer1Text.destroy();
-          answer2Text.destroy();overlay.destroy();
-
-          if (godJealousy > 65) {
-            if (piety - 25 < 0) {
-              piety = 0;
-            } else {
-              piety -= 25;
-            }
-          } else {
-            if (piety - 10 < 0) {
-              piety = 0;
-            } else {
-              piety -= 10;
-            }
-          }
-
-          random = Math.floor(Math.random() * (8000 - 2000)) + 2000;
-
-          eventTimer = myself.game.time.create(true);
-          eventTimer.add(random, myself.event, myself.game);
-          eventTimer.start();
-          break;
-        default:
-        console.log("default ", stage);
-      }
-
-
-    },
-*/
     divorce: function(stage) {
       switch(String(stage)) {
         case "start":
@@ -1128,12 +1045,12 @@ BasicGame.Game.prototype = {
           answer2Text.inputEnabled = true;
           answer2Text.events.onInputDown.add(function(text){myself.children("no")}, this);
           break;
-        case "yes": //piety up something is punished tho.....
+        case "yes":
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();overlay.destroy();
 
-          if (godJealousy > 65) { //change
+          if (godJealousy > 65) {
             if (piety + 25 > 100) {
               piety = 1000;
             } else {
@@ -1168,7 +1085,7 @@ BasicGame.Game.prototype = {
           eventTimer.add(random, myself.event, myself.game);
           eventTimer.start();
           break;
-        case "no": //questioning up piety down?
+        case "no": //questioning up piety down
           eventText.destroy();
           answer1Text.destroy();
           answer2Text.destroy();overlay.destroy();
@@ -1296,13 +1213,9 @@ BasicGame.Game.prototype = {
       }
 
 
-    }, //change
+    },
 
     endgame: function (pointer) {
-      //print out stats (piety etc)
-      //should i keep track of good/bad events?
-      //You pleased/didn't please God
-      //God does/doesn't care
       ram.destroy();
       ramtext.destroy();
       food.destroy();
@@ -1341,13 +1254,11 @@ BasicGame.Game.prototype = {
       endText1.anchor.set(Math.round(endText1.width * 0.5) / endText1.width);
       endText2.anchor.set(Math.round(endText2.width * 0.5) / endText2.width);
 
-      var restart = this.game.add.text(300, 300, 'RESTART', { fontSize: '60px', fill: '#fff' });
+      var restart = this.game.add.text(300, 300, '>RESTART', { fontSize: '60px', fill: '#fff' });
       restart.font = 'VT323';
       restart.anchor.set(Math.round(restart.width * 0.5) / restart.width);
       restart.inputEnabled = true;
       restart.events.onInputDown.add(this.restart, this, restart);
-
-      //restart button
 
     },
 
